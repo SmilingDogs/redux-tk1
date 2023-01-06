@@ -5,8 +5,10 @@ import PostsList from './components/PostsList';
 // import Counter from './components/Counter';
 import SinglePostPage from './pages/SinglePostPage';
 import Layout from './components/Layout';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import EditPostForm from './components/EditPostForm';
+import UserPage from './pages/UserPage';
+import UsersList from './components/UsersList';
 
 function App() {
  
@@ -19,8 +21,14 @@ function App() {
           <Route index element={<AddPostForm />} />
           <Route path=':postId' element={<SinglePostPage />} />
           <Route path='edit/:postId' element={<EditPostForm />} />
-
         </Route>
+
+        <Route path='user'>
+          <Route index element={<UsersList />} />
+          <Route path=':userId' element={<UserPage />} />
+        </Route>
+
+        <Route path='*' element={<Navigate to='/' replace />} />
       </Route>
     </Routes>
   )

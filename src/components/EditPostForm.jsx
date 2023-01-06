@@ -14,7 +14,7 @@ const EditPostForm = () => {
 
     const [title, setTitle] = useState(post.title)
     const [content, setContent] = useState(post.body)
-    const [userId, setUserId] = useState(post.userId)
+    const [userId, setUserId] = useState(Number(post.userId))
     const [requestStatus, setRequestStatus] = useState('idle')
 
     const dispatch = useDispatch()
