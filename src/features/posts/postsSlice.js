@@ -51,14 +51,41 @@ const initialState = {
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
     const { data } = await axios.get(POSTS_URL)
     return data
-
+    //! the result of return is action.payload inside CreateSlice
 })
 
 export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPost) => {
     const response = await axios.post(POSTS_URL, initialPost)
     return response.data //* this is just a new post object
+    //! the result of return is action.payload inside CreateSlice
 })
-//* initialPosts is a body of new post
+
+export const updatePost = createAsyncThunk('posts/updatePost', async (initialPost) => {
+    const { id } = initialPost;
+    
+    try {
+        const response = await axios.put(`${POSTS_URL}/${id}`, initialPost)
+        return response.data
+    } catch (err) {
+        // return err.message;
+        return initialPost; // only for testing Redux!
+    }
+    //! the result of return is action.payload inside CreateSlice
+})
+
+export const deletePost = createAsyncThunk('posts/deletePost', async (initialPost) => {
+    const { id } = initialPost;
+    try {
+        const response = await axios.delete(`${POSTS_URL}/${id}`)
+        if (response?.status === 200) return initialPost;
+        return `${response?.status}: ${response?.statusText}`;
+    } catch (err) {
+        return err.message;
+    }
+    //! the result of return is action.payload inside CreateSlice
+})
+
+//* initialPost is a body of new post
 export const postsSlice = createSlice({
     name: 'posts',
     initialState,
@@ -146,8 +173,29 @@ export const postsSlice = createSlice({
                     coffee: 0
                 }
                 console.log(action.payload)
-                //todo action.payload here is an object of new added post
+                //todo action.payload here is an object of response (new added post)
                 state.posts.push(action.payload)
+            })
+            .addCase(updatePost.fulfilled, (state, action) => {
+                if (!action.payload?.id) {
+                    console.log('Update could not complete')
+                    console.log(action.payload)
+                    return;
+                }
+                const { id } = action.payload;
+                action.payload.date = new Date().toISOString();
+                const posts = state.posts.filter(post => post.id !== id);
+                state.posts = [...posts, action.payload];
+            })
+            .addCase(deletePost.fulfilled, (state, action) => {
+                if (!action.payload?.id) {
+                    console.log('Delete could not complete')
+                    console.log(action.payload)//todo this logs `${response?.status}: ${response?.statusText}`from deletePost createAsyncThunk
+                    return;
+                }
+                const { id } = action.payload;//* action.payload === initialPost
+                const posts = state.posts.filter(post => post.id !== id);
+                state.posts = posts;
             })
     }
 })
@@ -157,5 +205,6 @@ export const { postAdded, reactionAdded } = postsSlice.actions;
 export const getPostsStatus = (state) => state.posts.status;
 export const getPostsError = (state) => state.posts.error;
 export const selectAllPosts = (state) => state.posts.posts; //* because now state is an object with reference state.posts(name: 'posts',) and it has key === posts => so state.posts.posts gets an []
+export const selectPostById = (state, postId) => state.posts.posts.find(post => post.id == postId);
 
 export default postsSlice.reducer;

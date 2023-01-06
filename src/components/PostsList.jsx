@@ -3,24 +3,22 @@ import {
   selectAllPosts,
   getPostsError,
   getPostsStatus,
-  fetchPosts,
 } from "../features/posts/postsSlice";
 
-import { useEffect } from "react";
 import PostContent from "./PostContent";
 
 const PostsList = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const posts = useSelector(selectAllPosts);
   const error = useSelector(getPostsError);
   const postStatus = useSelector(getPostsStatus);
 
-  useEffect(() => {
-    if (postStatus == "idle") {
-      dispatch(fetchPosts());
-    }
-  }, [postStatus, dispatch]);
+  // useEffect(() => {
+  //   if (postStatus == "idle") {
+  //     dispatch(fetchPosts());
+  //   }
+  // }, [postStatus, dispatch]);
 
   let content;
     if (postStatus === 'loading') {
@@ -34,7 +32,6 @@ const PostsList = () => {
 
     return (
         <section>
-            <h2>Posts</h2>
             {content}
         </section>
     )
