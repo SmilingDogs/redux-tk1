@@ -46,6 +46,7 @@ nav ul {
 nav ul li {
   display: inline-block;
   margin-right: 1rem;
+  
 }
 
 nav a, nav a:visited {
@@ -133,4 +134,12 @@ textarea {
 .post-link {
   text-decoration: none;
   color: #fff;
+}
+.user {
+  text-decoration: none;
+  color: beige;
+}
+
+.user:hover {
+  text-decoration: underline;
 }

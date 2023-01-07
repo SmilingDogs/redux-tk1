@@ -171,12 +171,13 @@ export const postsSlice = createSlice({
                 //Creating sortedPosts & assigning the id 
                 //would be not be needed if the fake API 
                 //returned accurate new post IDs
-                const sortedPosts = state.posts.sort((a, b) => {
-                    if (a.id > b.id) return 1
-                    if (a.id < b.id) return -1
-                    return 0
-                })
-                action.payload.id = sortedPosts[sortedPosts.length - 1].id + 1;
+                // const sortedPosts = state.posts.sort((a, b) => {
+                //     if (a.id > b.id) return 1
+                //     if (a.id < b.id) return -1
+                //     return 0
+                // })
+                // action.payload.id = sortedPosts[sortedPosts.length - 1].id + 1;
+                action.payload.id = state.ids[state.ids.length - 1] + 1
                 //End fix for fake API post IDs 
                 //todo modifyng new post data, adding userId, date and reactions
                 action.payload.userId = Number(action.payload.userId)
@@ -224,16 +225,16 @@ export const { postAdded, reactionAdded, increaseCount } = postsSlice.actions;
 export const getPostsStatus = (state) => state.posts.status;
 export const getPostsError = (state) => state.posts.error;
 export const getCount = (state) => state.posts.count;
-//getSelectors creates these selectors and we rename them with aliases using destructuring
+//todo getSelectors creates these selectors automatically and we rename them with aliases using destructuring
 export const {
     selectAll: selectAllPosts,
     selectById: selectPostById,
     selectIds: selectPostIds
-    // Pass in a selector that returns the posts slice of state
+    //todo Pass in a callback which returns the posts slice of state
 } = postsAdapter.getSelectors(state => state.posts)
 
-// export const selectAllPosts = (state) => state.posts.posts; //* because now state is an object with reference state.posts(name: 'posts',) and it has key === posts => so state.posts.posts gets an []
-// export const selectPostById = (state, postId) => state.posts.posts.find(post => post.id == postId);
+//* export const selectAllPosts = (state) => state.posts.posts; //* because now state is an object with reference state.posts(name: 'posts',) and it has key === posts => so state.posts.posts gets an []
+//* export const selectPostById = (state, postId) => state.posts.posts.find(post => post.id == postId); Not needed after postsAdapter.getSelectors
 
 //! this is a memoized selector...
 //? this works as following: selectAllPosts =>provides value of posts, 2 callback provides value of userId , which both are input parameters for 3 callback( posts, userId). So values in [] are dependencies
